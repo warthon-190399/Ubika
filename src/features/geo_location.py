@@ -1,7 +1,13 @@
-#%%
+
 import pandas as pd
 import googlemaps
 from time import sleep
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+API_KEY = os.getenv("GOOGLE_GEOENCODING_APIKEY")
+gmaps = googlemaps.Client(key=API_KEY)
 
 def obtener_coordenadas(direccion, contador=None):
     try:
@@ -20,12 +26,9 @@ def obtener_coordenadas(direccion, contador=None):
 
 
 
-input_path =  "D:/DS_Portafolio/casas/data/processed/adondevivir_processed_geo.csv"
+input_path =  "D:/DS_Portafolio/ubika/data/raw/adondevivir/adondevivir_final.csv"
 
 df = pd.read_csv(input_path)
-
-API_KEY = "AIzaSyAJRfznV_Rqcw04dpKWv8qUvJs3GTWbp-s"  # Tu clave aquí
-gmaps = googlemaps.Client(key=API_KEY)
 
 df["direccion_completa"] = df["direccion_limpia"] + ", " + df["distrito"]
 
