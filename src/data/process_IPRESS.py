@@ -1,15 +1,14 @@
+
+#%%
 #Importa librerias
 import pandas as pd
 import googlemaps
 import re
 
-df = pd.read_csv("C:/PC/7. PROYECTOS/Ubika7data/raw/IPRESS.csv", encoding="latin1")
+df = pd.read_csv("C:/PC/7. PROYECTOS/Ubika/data/raw/IPRESS.csv", encoding="latin1")
 
-#-------------------------------------------------------------------------------------------------
+#%%
 #API DE GOOGLE
-
-#import googlemaps
-#import pandas as pd
 
 # Tu clave de API de Google
 API_KEY = "AIzaSyBAiYDo7nmexhH7rkLpwSA-sP_0IJ-FR-8"  # 👈 reemplaza esto por tu clave real
@@ -30,7 +29,7 @@ def obtener_lat_lon(direccion):
 
 #Ejemplo: df2["ubicaciones_tupla"] = df["direccion_ubicacion"].apply(obtener_lat_lon) #API google
 
-#-------------------------------------------------------------------------------------------------
+#%%
 #FUNCIÓN LIMPIAR TEXTO
 
 #import re
@@ -99,15 +98,11 @@ def limpiar_direccion(direccion):
 
 #Ejemplo: df2["direccion_ubicacion"] = df1["direccion_ubicacion"].apply(limpiar_direccion)
 
-#-------------------------------------------------------------------------------------------------
-
-#df["Departamento"].unique()
+#%%
 df2 = df[df["Departamento"] == "LIMA"]
 
-#df2["Condición"].unique()
 df2 = df2[df2["Condición"] == "EN FUNCIONAMIENTO"]
 
-#df2["Tipo"].unique()
 df2 = df2[df2["Tipo"] == "ESTABLECIMIENTO DE SALUD CON INTERNAMIENTO"]
 df2["direccion_ubicacion"] = df2["Dirección"] + ", " + df2["Distrito"] + ", " + df2["Provincia"]
 
@@ -122,4 +117,6 @@ df2["lon"] = pd.to_numeric(df2["lon"], errors="coerce")
 
 df2 = df2[['Nombre del establecimiento', 'Departamento', 'Provincia', 'Distrito','Dirección','direccion_ubicacion', 'lat','lon']]
 
+#%%
 df2.to_csv("C:/PC/7. PROYECTOS/Ubika/data/processed/hospitales_processed.csv")
+# %%
