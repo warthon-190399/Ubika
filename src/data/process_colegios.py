@@ -8,7 +8,6 @@ input_path = os.path.join(BASE_DIR, "data", "raw", "colegios.csv")
 
 output_path = os.path.join(BASE_DIR, "data", "processed", "colegios_processed.csv")
 
-
 df_raw = pd.read_csv(input_path, sep="|")
 
 df = df_raw.copy()
@@ -30,14 +29,13 @@ df = df.drop(columns=columns_to_drop, errors="ignore")
 
 for col in df.select_dtypes(include="object").columns:
     df[col] = (
-        df[col]
+        df[col] 
         .astype(str)
         .str.strip()
         .str.lower()
         .str.normalize("NFKD")  # quitar tildes y acentos
         .str.encode("ascii", "ignore")
         .str.decode("utf-8")
-
     )
 
 df["latitud"] = pd.to_numeric(df["latitud"], errors="coerce")

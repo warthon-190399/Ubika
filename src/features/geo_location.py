@@ -1,4 +1,4 @@
-
+#%%
 import pandas as pd
 import googlemaps
 from time import sleep
@@ -26,11 +26,9 @@ def obtener_coordenadas(direccion, contador=None):
 
 
 
-input_path =  "D:/DS_Portafolio/ubika/data/raw/adondevivir/adondevivir_final.csv"
+input_path =  "D:/DS_Portafolio/ubika/data/processed/adondevivir_processed.csv"
 
 df = pd.read_csv(input_path)
-
-df["direccion_completa"] = df["direccion_limpia"] + ", " + df["distrito"]
 
 # Aplicar geocodificación con contador
 latitudes = []
@@ -38,6 +36,8 @@ longitudes = []
 
 for i, row in enumerate(df.itertuples(), start=1):
     direccion = row.direccion_completa
+    if pd.isna(direccion):
+        direccion = row.distrito
     lat, lon = obtener_coordenadas(direccion, contador=i)
     latitudes.append(lat)
     longitudes.append(lon)
@@ -47,4 +47,4 @@ for i, row in enumerate(df.itertuples(), start=1):
 df["latitud"] = latitudes
 df["longitud"] = longitudes
 
-df.to_csv("D:/DS_Portafolio/casas/data/processed/adondevivir_processed_geo.csv")
+df.to_csv("D:/DS_Portafolio/ubika/data/processed/adondevivir_processed_geo.csv", index = False)

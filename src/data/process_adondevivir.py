@@ -1,14 +1,14 @@
 #%%
 import pandas as pd
 import unicodedata
+import os
 
-#%%
-inputh_path = "D:/DS_Portafolio/casas/data/raw/adondevivir/adondevivir_final.csv"
-output_path = "D:/DS_Portafolio/casas/data/processed/adondevivir_processed.csv"
+
+inputh_path = "D:/DS_Portafolio/ubika/data/raw/adondevivir/adondevivir_final.csv"
+output_path = "D:/DS_Portafolio/ubika/data/processed/adondevivir_processed.csv"
 
 df_raw = pd.read_csv(inputh_path)
 
-#%%
 
 def extract_prices(valor):
     if pd.isna(valor):
@@ -66,8 +66,6 @@ def extraer_zona_y_distrito(ubicacion):
     else:
         return pd.Series([None, None])
 
-#%%
-
 df_raw[["precio_pen", "precio_usd"]] = df_raw["precio"].apply(extract_prices)
 
 df_raw["mantenimiento_soles"] = df_raw["mantenimiento"].apply(extraer_mantenimiento)
@@ -105,7 +103,7 @@ df_raw["distrito"] = (df_raw["distrito"]
     .str.replace("  ", " ")
     .str.strip()
 )
-# %%
+
 df_raw["area_m2"] = df_raw["area"].apply(lambda x: str(x).split(" ")[0] if pd.notna(x) else None)
 df_raw["area_m2"] = df_raw["area_m2"].astype(float)
 
@@ -126,14 +124,130 @@ df_raw["antiguedad"] = df_raw["antiguedad"].astype(float)
 df_raw["num_visualizaciones"] = df_raw["visualizaciones"].apply(lambda x: str(x).split(" ")[0] if pd.notna(x) else None)
 df_raw["num_visualizaciones"] = df_raw["num_visualizaciones"].astype(float)
 
-df_raw = df_raw.rename(columns={"fecha_publicacion_exacta": })
-# %%
-df_raw.columns
-# %%
+df_raw = df_raw.rename(columns={"fecha_publicacion_exacta":  "fecha_pub"})
 
-df_processed = df_raw[['precio_pen', 'precio_usd', 'mantenimiento_soles', 'direccion_limpia', 'zona', 'distrito', 'area_m2', 'num_dorm', 'num_banios', 'num_estac', 'antiguedad', "num_visualizaciones"]]
-df_processed = df_processed.rename(columns={"fecha_publicacion_exacta":  "fecha_publicacion"})
+mapeo_ubicaciones = {
+    "lima": "lima cercado",
+    "lima cercado": "lima cercado",
+    "chosica (lurigancho)": "lurigancho",
+    "ate vitarte": "ate",
+    "san juan de lurigancho": "sjl",
+    "san juan de miraflores": "sjm",
+    "villa maria del triunfo": "vmt",
+    "villa el salvador": "ves",
+    "santiago de surco": "surco",
+    "jesus maria": "jesus maria",
+    "la victoria": "la victoria",
+    "los olivos": "los olivos",
+    "san martin de porres": "smp",
+    "san miguel": "san miguel",
+    "pueblo libre": "pueblo libre",
+    "san borja": "san borja",
+    "san isidro": "san isidro",
+    "barranco": "barranco",
+    "magdalena": "magdalena",
+    "surquillo": "surquillo",
+    "lince": "lince",
+    "brena": "brena",
+    "la molina": "la molina",
+    "san luis": "san luis",
+    "independencia": "independencia",
+    "comas": "comas",
+    "rimac": "rimac",
+    "el agustino": "el agustino",
+    "santa anita": "santa anita",
+    "carabayllo": "carabayllo",
+    "puente piedra": "puente piedra",
+    "ancon": "ancon",
+    "lurin": "lurin",
+    "pachacamac": "pachacamac",
+    "cieneguilla": "cieneguilla",
+    "san bartolo": "san bartolo",
+    "punta negra": "punta negra",
+    "punta hermosa": "punta hermosa",
+    "santa maria del mar": "santa maria del mar",
+    "chorrillos": "chorrillos",
+    "callao": "callao",
+    "miraflores": "miraflores",
+    "chaclacayo": "chaclacayo",
+    "pucusana": "pucusana"
+}
 
-# %%
+mapeo_socioeconomico = {
+    # Nivel A
+    "san isidro": "A",
+    "miraflores": "A",
+    "la molina": "A",
+    "barranco": "A",
+    "san borja": "A",
+    "surco": "A",
+
+    # Nivel B
+    
+    "jesus maria": "B",
+    "magdalena": "B",
+    "lince": "B",
+    "pueblo libre": "B",
+    "san miguel": "B",
+    "chorrillos": "B",
+    "santa anita": "B",
+    "cieneguilla": "B",
+    "san bartolo": "B",
+    "punta negra": "B",
+    "punta hermosa": "B",
+    "santa maria del mar": "B",
+    "pucusana": "B",
+
+    # Nivel C
+    "brena": "C",
+    "surquillo": "C",
+    "la victoria": "C",
+    "independencia": "C",
+    "los olivos": "C",
+    "el agustino": "C",
+    "ate": "C",
+    "smp": "C",
+    "comas": "C",
+    "callao": "C",
+    "rimac": "C",
+    "lima cercado": "C",
+    "san luis": "C",
+    "chaclacayo": "C",
+
+    # Nivel D
+    "sjl": "D",
+    "sjm": "D",
+    "vmt": "D",
+    "ves": "D",
+    "carabayllo": "D",
+    "puente piedra": "D",
+    "ancon": "D",
+    "lurin": "D",
+    "pachacamac": "D",
+    "lurigancho": "D",
+}
+
+df_raw['ubicacion_normalizada'] = df_raw['distrito'].map(mapeo_ubicaciones)
+df_raw['nivel_socioeconomico'] = df_raw['ubicacion_normalizada'].map(mapeo_socioeconomico)
+
+
+df_processed = df_raw[['precio_pen', 'precio_usd', 'mantenimiento_soles', 'direccion_limpia', 'zona', 'distrito', 'area_m2', 'num_dorm', 'num_banios', 'num_estac', 'antiguedad', "num_visualizaciones", "fecha_pub", "ubicacion_normalizada", "nivel_socioeconomico"]]
+
+df_processed['direccion_limpia'] = df_processed.apply(
+    lambda row: row['zona'] if row['direccion_limpia'] == 'direccion no informada' else row['direccion_limpia'],
+    axis=1
+)
+
+#%%
+
+df_processed["direccion_completa"] = df_processed["direccion_limpia"] + ", " + df_processed["distrito"]
+
+df_processed = df_processed.drop(columns={"direccion_limpia", "zona", "distrito"})
+
+df_processed = df_processed.rename(columns={"ubicacion_normalizada": "distrito"})
+
+#%%
+
 df_processed.to_csv(output_path, index=False)
+
 # %%

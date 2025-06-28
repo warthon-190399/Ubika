@@ -4,8 +4,8 @@ from datetime import datetime, timedelta
 import time
 import random
 
-csv_path = "D:/DS_Portafolio/casas/data/raw//adondevivir/adondevivir_todo3.csv"
-output_path = "D:/DS_Portafolio/casas/data/raw/adondevivir/adondevivir_todo3_completo.csv"
+csv_path = "D:/DS_Portafolio/ubika/data/raw//adondevivir/adondevivir_todo3.csv"
+output_path = "D:/DS_Portafolio/ubika/data/raw/adondevivir/adondevivir_todo3_completo.csv"
 
 df = pd.read_csv(csv_path)
 

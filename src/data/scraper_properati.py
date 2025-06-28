@@ -4,7 +4,7 @@ from bs4 import BeautifulSoup
 import pandas as pd
 from time import sleep
 
-output_path = "D:/DS_Portafolio/casas/data/raw/properati/adondevivir_todo.csv"
+output_path = "D:/DS_Portafolio/ubika/data/raw/properati/adondevivir_todo.csv"
 
 
 base_url = "https://www.properati.com.pe/s/lima/alquiler/{page}?propertyType=apartment%2Chouse"
