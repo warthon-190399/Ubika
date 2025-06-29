@@ -4,8 +4,14 @@
 import pandas as pd
 import googlemaps
 import re
+import os
 
-df = pd.read_csv("C:/PC/7. PROYECTOS/Ubika/data/raw/IPRESS.csv", encoding="latin1")
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+BASE_DIR = os.path.abspath(os.path.join(BASE_DIR, "..", ".."))
+input_path = os.path.join(BASE_DIR, "data", "raw", "IPRESS.csv")
+
+print(input_path)
+df = pd.read_csv(input_path, encoding="latin1")
 
 #%%
 #API DE GOOGLE
