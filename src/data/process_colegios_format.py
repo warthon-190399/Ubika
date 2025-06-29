@@ -2,7 +2,6 @@
 import pandas as pd
 # %%
 df = pd.read_csv("C:/PC/7. PROYECTOS/Ubika/data/processed/colegios_processed.csv")
-df
 #%%
 #Estandarización de nombre de las columnas
 df.columns
@@ -20,7 +19,10 @@ df["distrito"] = df["distrito"].replace({"san juan de lurigancho":"sjl",
                                          "villa maria del triunfo":"vmt",
                                          "san martin de porres":"smp",
                                          "villa el salvador":"ves"})
-df["distrito"].unique()
+df
+# %% Se eliminan duplicados
+df = df.drop_duplicates(subset=['nombre'])
+df
 # %%
 df.to_csv("C:/PC/7. PROYECTOS/Ubika/data/processed/colegios_processed_format.csv")
 # %%
